@@ -40,7 +40,7 @@ customerSchema.pre('save', async function(){
 })
 
 customerSchema.methods.createJWT = function(){
-    return jwt.sign({userID: this._id},process.env.SECRET_KEY,{expiresIn:process.en,})
+    return jwt.sign({customerID: this._id},process.env.SECRET_KEY,{expiresIn:process.en,})
 }
 
 customerSchema.methods.comparePSW = async function(password){

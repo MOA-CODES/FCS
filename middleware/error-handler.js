@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next)=>{
         statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     }
 
-    return res.status(customError.statusCode).send({error:{name: err.name, msg: err.msg}})
+    return res.status(customError.statusCode).send({error:{name: err.name, msg: customError.msg}})
 }
 
 module.exports = errorHandler

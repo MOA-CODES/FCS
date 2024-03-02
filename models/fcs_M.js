@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
-const fcsSchema = new mongooseSchema({
+const fcsSchema = new mongoose.Schema({
 
     Fee_id: {
         type: String,
         maxlenght: 8,
         minlenght: 8,
+        unique: true,
     },
     Fee_currency:{
         type: String,
@@ -15,6 +16,10 @@ const fcsSchema = new mongooseSchema({
     },
     Fee_entity:{
         type: String,
+        enum:{
+            values:['CREDIT-CARD', 'DEBIT-CARD', 'BANK-ACCOUNT', 'USSD', 'WALLET-ID'],
+            message:'{VALUE} is not supported',
+        }
     },
     Entity_property:{
         type: String,
