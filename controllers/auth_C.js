@@ -4,7 +4,14 @@ const {StatusCodes} = require('http-status-codes')
 const customError = require('../middleware/customError')
 
 const register = async (req, res)=>{
-    const {email, fullname} = req.body
+    const {email, fullname, password} = req.body
+
+    if(!email){
+        throw new customError('Provide an email address', StatusCodes.BAD_REQUEST)
+    }
+    if(!password){
+        throw new customError('Provide a Password', StatusCodes.BAD_REQUEST)
+    }
 
     if(!fullname){
         let fname = email.split('@')[0]
@@ -27,7 +34,7 @@ const login = async (req, res)=>{
         throw new customError('Provide email', StatusCodes.BAD_REQUEST)
     }
     if(!password){
-        throw new customError('Provide email', StatusCodes.BAD_REQUEST)
+        throw new customError('Provide Password', StatusCodes.BAD_REQUEST)
     }
 
     const customer = await Customer.findOne({email, password})
@@ -50,6 +57,10 @@ const login = async (req, res)=>{
 const logout = async (req, res)=>{
 
     const {customerId, token} = req.user
+
+    if(!customerId || !token){
+        throw new customError('Invalid Authentication', StatusCodes.UNAUTHORIZED)
+    }
 
     const customer = await Customer.findOne({_id:customerId})
 
