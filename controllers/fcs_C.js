@@ -22,7 +22,12 @@ const createFCS = async (req, res) =>{
     }
 
     res.status(StatusCodes.OK).send({msg:"Fee Configuration added successfully", status:"OK"});
+}
+
+const TransactionFee = async(req, res) => {
+
+    const {transaction} = req.body
 
 }
 
-module.exports = {createFCS}
+module.exports = {createFCS, TransactionFee}
