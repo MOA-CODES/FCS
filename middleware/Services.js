@@ -1,11 +1,6 @@
 const customError = require('../middleware/customError')
 const {StatusCodes} = require('http-status-codes')
-
-const test = "LNPY1221 NGN * *(*) : APPLY PERC 1.4\n\
-              LNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0\n\
-              LNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4\n\
-              LNPY1224 NGN * BANK-ACCOUNT(*) : APPLY FLAT 100\n\
-              LNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55" //test data
+const Fcs = require('../models/fcs_M')
 
 const getFeeConfig = async (text) =>{
     const FCS_array = []
@@ -61,4 +56,130 @@ const getFeeConfig = async (text) =>{
     return FCS_array
 }
 
-module.exports = {getFeeConfig}
+const transactionValidator = async (transaction)=>{
+  if (!Object.keys(transaction).length === 6){
+        return 'Invalid Transaction Syntax'
+  }
+
+    if(!transaction.ID){
+        return 'Invalid Transaction Syntax Provide transaction ID'
+    }
+    if(!transaction.Amount){
+        return 'Invalid Transaction Syntax Provide transaction Amount'
+    }
+    if(!transaction.Currency){
+        return 'Invalid Transaction Syntax Provide transaction Currency'
+    }
+    if(!transaction.CurrencyCountry){
+        return 'Invalid Transaction Syntax Provide transaction CurrencyCountry'
+    }
+
+    //CUSTOMER
+    if(!(Object.keys(transaction.Customer).length === 4)){
+        return 'Invalid Transaction Customer Syntax'
+    }
+    if(!transaction.Customer.ID ){
+        return 'Invalid Transaction Customer Syntax Provide ID'
+    }
+    if(!transaction.Customer.EmailAddress ){
+        return 'Invalid Transaction Customer Syntax Provide EmailAddress'
+    }
+    if(!transaction.Customer.FullName ){
+        return 'Invalid Transaction Customer Syntax Provide FullName'
+    }
+    if(!transaction.Customer.BearsFee ){
+        return 'Invalid Transaction Customer Syntax Provide BearsFee'
+    }
+
+    //PaymentEntity
+    if(!(Object.keys(transaction.PaymentEntity).length === 7)){
+        return 'Invalid Transaction PaymentEntity Syntax'
+    }
+    if(!transaction.PaymentEntity.ID ){
+        return 'Invalid Transaction PaymentEntity Syntax Provide ID'
+    }
+    if(!transaction.PaymentEntity.Issuer ){
+        return 'Invalid Transaction PaymentEntity Syntax Provide Issuer'
+    }
+    if(!transaction.PaymentEntity.Brand ){
+        return 'Invalid Transaction PaymentEntity Syntax Provide Brand'
+    }
+    if(!transaction.PaymentEntity.Number ){
+        return 'Invalid Transaction PaymentEntity Syntax Provide Number'
+    }
+    if(!transaction.PaymentEntity.SixID ){
+        return 'Invalid Transaction PaymentEntity Syntax Provide SixID'
+    }
+    if(!transaction.PaymentEntity.Type ){
+        return 'Invalid Transaction PaymentEntity Syntax Provide Type'
+    }
+    if(!transaction.PaymentEntity.Country ){
+        return 'Invalid Transaction PaymentEntity Syntax Provide Country'
+    }
+
+    return true
+}
+
+const computeTransaction = async (transaction)=>{
+    const {Brand, Type, Country} = transaction.PaymentEntity
+    const {Amount, CurrencyCountry} = transaction
+    const {BearsFee} = transaction.Customer //if false then chargedamount = transaction amount
+
+    //find applicable FCS
+    let FCSquery = {}
+
+    if(!(Country === CurrencyCountry)){
+        FCSquery.Fee_locale = "INTL"
+    }else{
+        FCSquery.Fee_locale = "LOCL"
+    }
+
+    FCSquery.Fee_entity = Type
+    FCSquery.Entity_property = Brand
+
+    let fcs = await Fcs.find({FCSquery})
+
+    if(!fcs || fcs.length === 0){ //if exact match cant be found search for all entity property
+        fcs = await Fcs.findOne({Fee_locale: FCSquery.Fee_locale,Fee_entity: FCSquery.Fee_entity,Entity_property: '*'})
+    } 
+    else if(!fcs || fcs.length === 0){ //if previous match cant be found search for all fee locale
+        fcs = await Fcs.findOne({Fee_locale: '*',Fee_entity: FCSquery.Fee_entity,Entity_property:FCSquery.Entity_property})
+    }
+    else if(!fcs || fcs.length === 0){ //if previous match cant be found search for all fee locale and fee entity
+        fcs = await Fcs.findOne({Fee_locale: '*',Fee_entity: FCSquery.Fee_entity,Entity_property: '*'})
+    }
+    if(fcs === null){
+        return 'no fee configuration spec exists for this transaction'
+    }
+
+    //reponse
+    let rep = {}
+
+    rep.AppliedFeeID = fcs.Fee_id
+    rep.AppliedFeeValue =  await calculateFee(Amount, fcs.Fee_type, fcs.Fee_value) //calculates the fee
+    rep.ChargeAmount = parseFloat(Amount) + parseFloat(rep.AppliedFeeValue)
+    rep.SettlementAmount = parseFloat(rep.ChargeAmount) - parseFloat(rep.AppliedFeeValue)
+
+    return rep
+}
+
+const calculateFee = async (amount,fee_type,fee_value)=>{
+    //'FLAT','PERC','FLAT_PERC'
+    if(fee_type === 'FLAT'){
+        fee_value = parseFloat(fee_value)
+        return parseFloat(fee_value)
+    }
+    if(fee_type === 'PERC'){
+        fee_value = parseFloat(fee_value)
+        return ((fee_value/100)*amount)
+    }
+    if(fee_type === 'FLAT_PERC'){
+        const flat = parseFloat(fee_value.split(':')[0])
+        const perc = parseFloat(fee_value.split(':')[1])
+
+        return flat + ((perc/100)*amount)
+    }
+}
+
+
+module.exports = {getFeeConfig,transactionValidator, computeTransaction}

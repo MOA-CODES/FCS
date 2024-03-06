@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router()
 
-const {createFCS, TransactionFee} = require('../controllers/fcs_C')
+const {createFCS, TransactionFee, getAllFcs} = require('../controllers/fcs_C')
 
-router.post('/fees', createFCS)
+router.route('/fees').post(createFCS).get(getAllFcs)
 router.post('/compute-transaction-fee', TransactionFee)
 
 module.exports = router

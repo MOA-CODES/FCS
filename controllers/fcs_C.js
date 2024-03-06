@@ -1,7 +1,8 @@
 const Fcs = require('../models/fcs_M')
 const {StatusCodes} = require('http-status-codes')
 const customError = require('../middleware/customError')
-const {getFeeConfig} = require('../middleware/Services')
+const {getFeeConfig, transactionValidator, computeTransaction} = require('../middleware/Services')
+const { all } = require('../routes/fcs_R')
 
 const createFCS = async (req, res) =>{
 
@@ -24,10 +25,30 @@ const createFCS = async (req, res) =>{
     res.status(StatusCodes.OK).send({msg:"Fee Configuration added successfully", status:"OK"});
 }
 
+const getAllFcs = async (req, res) => {
+    const allFcs = await Fcs.find({})
+
+    res.status(StatusCodes.OK).send({length: allFcs.length,allFcs})
+}
+
 const TransactionFee = async(req, res) => {
 
-    const {transaction} = req.body
+    const transaction = req.body
+
+    const validation = await transactionValidator(transaction)
+
+    if (!(validation === true)){
+        throw new customError(validation, StatusCodes.BAD_REQUEST)
+    }
+
+    const result = await computeTransaction(transaction)
+
+    if(!(result instanceof Object)){
+        throw new customError(result, StatusCodes.NOT_IMPLEMENTED)
+    }
+
+    res.status(StatusCodes.OK).send({result})
 
 }
 
-module.exports = {createFCS, TransactionFee}
+module.exports = {createFCS, TransactionFee, getAllFcs}

@@ -13,6 +13,10 @@ const fcsSchema = new mongoose.Schema({
     },
     Fee_locale:{
         type: String,
+        enum:{
+            values:['LOCL', 'INTL', '*'],
+            message:'{VALUE} is not supported',
+        }
     },
     Fee_entity:{
         type: String,
