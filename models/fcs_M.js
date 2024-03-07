@@ -4,7 +4,6 @@ const fcsSchema = new mongoose.Schema({
 
     Fee_id: {
         type: String,
-        maxlenght: 8,
         minlenght: 8,
         unique: true,
     },

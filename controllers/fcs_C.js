@@ -26,9 +26,40 @@ const createFCS = async (req, res) =>{
 }
 
 const getAllFcs = async (req, res) => {
-    const allFcs = await Fcs.find({})
+    const {fee_id, fee_currency, fee_locale, fee_entity, entity_property, fee_type, fee_value, page, limit} = req.query
 
-    res.status(StatusCodes.OK).send({length: allFcs.length,allFcs})
+    const queryObject = {}
+
+    if(fee_id){
+        queryObject.Fee_id = {$regex: fee_id, $options: 'i'}
+    }
+    if(fee_currency){
+        queryObject.Fee_currency = fee_currency
+    }
+    if(fee_locale){
+        queryObject.Fee_locale = fee_locale
+    }
+
+    if(fee_entity){
+        queryObject.Fee_entity = fee_entity
+    }
+    if(entity_property){
+        queryObject.Entity_property = {$regex: entity_property, $options: 'i'}
+    }
+    if(fee_type){
+        queryObject.Fee_type = fee_type
+    }
+    if(fee_value){
+        queryObject.Fee_value = fee_value
+    }
+
+    const p = Number(page) || 1
+    const l = Number(limit) || 3
+    const skip = (p-1)*l
+
+    let Fee_Configurations = await Fcs.find(queryObject).select(' Fee_id Fee_currency Fee_locale Fee_entity Entity_property Fee_type Fee_value createdAt').sort('Fee_id').limit(l).skip(skip)    
+
+    res.status(StatusCodes.OK).send({Page_no: p,no_Fcs:Fee_Configurations.length,Fee_Configurations})
 }
 
 const TransactionFee = async(req, res) => {

@@ -20,6 +20,9 @@ const getFeeConfig = async (text) =>{
         if(FCS.Fee_id === null || FCS.Fee_id === undefined || FCS.Fee_id === ''){ //if null or undefined or '', throw an error
             return `Provide a FEE-ID on row ${i}`
         }
+        if(!(FCS.Fee_id.length === 8)){
+            return `Provide a valid FEE-ID on row ${i}`
+        }
 
         FCS.Fee_currency = currentRow.split(' ')[1]
         if(FCS.Fee_currency === null || FCS.Fee_currency === undefined || FCS.Fee_currency === ''){
@@ -182,4 +185,4 @@ const calculateFee = async (amount,fee_type,fee_value)=>{
 }
 
 
-module.exports = {getFeeConfig,transactionValidator, computeTransaction}
+module.exports = {getFeeConfig, transactionValidator, computeTransaction}

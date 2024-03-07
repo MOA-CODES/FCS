@@ -1,0 +1,318 @@
+openapi: 3.0.0
+info:
+  title: FCS
+  contact:
+    name: MOA
+    url: https://github.com/MOA-CODES
+    email: moa.businessbread@gmail.com
+  version: '1.0'
+servers:
+- url: http://example.com/fcs
+  variables: {}
+paths:
+  /fees:
+    post:
+      tags:
+      - FCS
+      summary: FeeConfiguration
+      operationId: FeeConfiguration
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/FeeConfigurationRequest'
+              - example:
+                  FeeConfigurationSpec: >-
+                    LNPY1221 NGN * CREDIT-CARD(*) : APPLY PERC 1.4
+                     LNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0
+                     LNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4
+                    LNPY1224 NGN * BANK-ACCOUNT(*) : APPLY FLAT 100
+                     LNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55
+            example:
+              FeeConfigurationSpec: >-
+                LNPY1221 NGN * CREDIT-CARD(*) : APPLY PERC 1.4
+                 LNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0
+                 LNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4
+                LNPY1224 NGN * BANK-ACCOUNT(*) : APPLY FLAT 100
+                 LNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    get:
+      tags:
+      - FCS
+      summary: get FeeConfiguration
+      operationId: getFeeConfiguration
+      parameters:
+      - name: page
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+          example: 1
+      - name: limit
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+          example: 5
+      - name: fee_id
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: LNPY1221
+      - name: fee_currency
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: NGN
+      - name: fee_locale
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: '*'
+      - name: fee_entity
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: entity_property
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: fee_type
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: fee_value
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /compute-transaction-fee:
+    post:
+      tags:
+      - FCS
+      summary: Compute-transaction-fee
+      operationId: Compute-transaction-fee
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Compute-transaction-fee-Request'
+              - example:
+                  ID: 91203
+                  Amount: 5000
+                  Currency: NGN
+                  CurrencyCountry: NG
+                  Customer:
+                    ID: 2211232
+                    EmailAddress: anonimized29900@anon.io
+                    FullName: Abel Eden
+                    BearsFee: true
+                  PaymentEntity:
+                    ID: 2203454
+                    Issuer: GTBANK
+                    Brand: MASTERCARD
+                    Number: 530191******2903
+                    SixID: 530191
+                    Type: CREDIT-CARD
+                    Country: NG
+            example:
+              ID: 91203
+              Amount: 5000
+              Currency: NGN
+              CurrencyCountry: NG
+              Customer:
+                ID: 2211232
+                EmailAddress: anonimized29900@anon.io
+                FullName: Abel Eden
+                BearsFee: true
+              PaymentEntity:
+                ID: 2203454
+                Issuer: GTBANK
+                Brand: MASTERCARD
+                Number: 530191******2903
+                SixID: 530191
+                Type: CREDIT-CARD
+                Country: NG
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+components:
+  schemas:
+    FeeConfigurationRequest:
+      title: FeeConfigurationRequest
+      required:
+      - FeeConfigurationSpec
+      type: object
+      properties:
+        FeeConfigurationSpec:
+          type: string
+      example:
+        FeeConfigurationSpec: >-
+          LNPY1221 NGN * CREDIT-CARD(*) : APPLY PERC 1.4
+           LNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0
+           LNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4
+          LNPY1224 NGN * BANK-ACCOUNT(*) : APPLY FLAT 100
+           LNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55
+    Compute-transaction-fee-Request:
+      title: Compute-transaction-fee-Request
+      required:
+      - ID
+      - Amount
+      - Currency
+      - CurrencyCountry
+      - Customer
+      - PaymentEntity
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int32
+        Amount:
+          type: integer
+          format: int32
+        Currency:
+          type: string
+        CurrencyCountry:
+          type: string
+        Customer:
+          allOf:
+          - $ref: '#/components/schemas/Customer'
+          - {}
+        PaymentEntity:
+          allOf:
+          - $ref: '#/components/schemas/PaymentEntity'
+          - {}
+      example:
+        ID: 91203
+        Amount: 5000
+        Currency: NGN
+        CurrencyCountry: NG
+        Customer:
+          ID: 2211232
+          EmailAddress: anonimized29900@anon.io
+          FullName: Abel Eden
+          BearsFee: true
+        PaymentEntity:
+          ID: 2203454
+          Issuer: GTBANK
+          Brand: MASTERCARD
+          Number: 530191******2903
+          SixID: 530191
+          Type: CREDIT-CARD
+          Country: NG
+    Customer:
+      title: Customer
+      required:
+      - ID
+      - EmailAddress
+      - FullName
+      - BearsFee
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int32
+        EmailAddress:
+          type: string
+        FullName:
+          type: string
+        BearsFee:
+          type: boolean
+      example:
+        ID: 2211232
+        EmailAddress: anonimized29900@anon.io
+        FullName: Abel Eden
+        BearsFee: true
+    PaymentEntity:
+      title: PaymentEntity
+      required:
+      - ID
+      - Issuer
+      - Brand
+      - Number
+      - SixID
+      - Type
+      - Country
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int32
+        Issuer:
+          type: string
+        Brand:
+          type: string
+        Number:
+          type: string
+        SixID:
+          type: integer
+          format: int32
+        Type:
+          type: string
+        Country:
+          type: string
+      example:
+        ID: 2203454
+        Issuer: GTBANK
+        Brand: MASTERCARD
+        Number: 530191******2903
+        SixID: 530191
+        Type: CREDIT-CARD
+        Country: NG
+tags:
+- name: FCS
+  description: ''
