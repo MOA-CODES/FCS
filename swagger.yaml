@@ -7,7 +7,7 @@ info:
     email: moa.businessbread@gmail.com
   version: '1.0'
 servers:
-- url: https://fcs-ix3gmqsoo-moa-codes.vercel.app/api/v1
+- url: https://fcs-beta.vercel.app//api/v1
   variables: {}
 paths:
   /fees:
