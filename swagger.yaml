@@ -27,17 +27,17 @@ paths:
               - example:
                   FeeConfigurationSpec: >-
                     LNPY1221 NGN * CREDIT-CARD(*) : APPLY PERC 1.4
-                     LNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0
-                     LNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4
+                    LNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0
+                    LNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4
                     LNPY1224 NGN * BANK-ACCOUNT(*) : APPLY FLAT 100
-                     LNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55
+                    LNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55
             example:
               FeeConfigurationSpec: >-
                 LNPY1221 NGN * CREDIT-CARD(*) : APPLY PERC 1.4
-                 LNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0
-                 LNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4
+                LNPY1222 NGN INTL CREDIT-CARD(VISA) : APPLY PERC 5.0
+                LNPY1223 NGN LOCL CREDIT-CARD(*) : APPLY FLAT_PERC 50:1.4
                 LNPY1224 NGN * BANK-ACCOUNT(*) : APPLY FLAT 100
-                 LNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55
+                LNPY1225 NGN * USSD(MTN) : APPLY PERC 0.55
         required: true
       responses:
         '200':
