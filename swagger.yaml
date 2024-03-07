@@ -10,7 +10,7 @@ servers:
 - url: https://fcs-beta.vercel.app/api/v1
   variables: {}
 paths:
-  /fees:
+  /fcs/fees:
     post:
       tags:
       - FCS
@@ -134,7 +134,7 @@ paths:
           description: ''
           headers: {}
       deprecated: false
-  /compute-transaction-fee:
+  /fcs/compute-transaction-fee:
     post:
       tags:
       - FCS
