@@ -93,6 +93,10 @@ const transactionValidator = async (transaction)=>{
     if(!transaction.Customer.BearsFee ){
         return 'Invalid Transaction Customer Syntax Provide BearsFee'
     }
+    if(!(transaction.Customer.BearsFee === true || transaction.Customer.BearsFee === false )){
+        return 'BearsFee can only be true or false'
+    }
+
 
     //PaymentEntity
     if(!(Object.keys(transaction.PaymentEntity).length === 7)){
