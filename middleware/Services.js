@@ -160,7 +160,10 @@ const computeTransaction = async (transaction)=>{
 
     rep.AppliedFeeID = fcs.Fee_id
     rep.AppliedFeeValue =  await calculateFee(Amount, fcs.Fee_type, fcs.Fee_value) //calculates the fee
-    rep.ChargeAmount = parseFloat(Amount) + parseFloat(rep.AppliedFeeValue)
+    rep.ChargeAmount = parseFloat(Amount)
+    if(BearsFee === true){
+        rep.ChargeAmount = parseFloat(Amount) + parseFloat(rep.AppliedFeeValue)
+    }
     rep.SettlementAmount = parseFloat(rep.ChargeAmount) - parseFloat(rep.AppliedFeeValue)
 
     return rep
