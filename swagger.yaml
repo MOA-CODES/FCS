@@ -53,7 +53,7 @@ paths:
       - name: page
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -63,7 +63,7 @@ paths:
       - name: limit
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -73,7 +73,7 @@ paths:
       - name: fee_id
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -82,7 +82,7 @@ paths:
       - name: fee_currency
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -91,7 +91,7 @@ paths:
       - name: fee_locale
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -100,7 +100,7 @@ paths:
       - name: fee_entity
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -108,7 +108,7 @@ paths:
       - name: entity_property
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -116,7 +116,7 @@ paths:
       - name: fee_type
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
@@ -124,7 +124,7 @@ paths:
       - name: fee_value
         in: query
         description: ''
-        required: true
+        required: false
         style: form
         explode: true
         schema:
