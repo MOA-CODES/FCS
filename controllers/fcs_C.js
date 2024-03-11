@@ -19,6 +19,10 @@ const createFCS = async (req, res) =>{
     }
 
     for(let i=0; i<FCS_array.length; i++){
+        const check = await Fcs.findOne({Fee_currency: FCS_array[i].Fee_currency, Fee_locale: FCS_array[i].Fee_locale, Fee_entity: FCS_array[i].Fee_entity, Entity_property: FCS_array[i].Entity_property, Fee_type: FCS_array[i].Fee_type, Fee_value: FCS_array[i].Fee_value})
+        if(check){
+            throw new customError(` The fee config that ${FCS_array[i].Fee_id} creates already exists`, StatusCodes.CONFLICT)
+        }
         const fcs = await Fcs.create(FCS_array[i]) 
     }
 
